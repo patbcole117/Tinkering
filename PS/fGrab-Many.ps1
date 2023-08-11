@@ -4,8 +4,8 @@
         Searches for files and copies them to a destination directory.
 
     .DESCRIPTION
-        fGrab-Many is a function that will search recursively for any files matching a particular pattern and 
-        then wil copy those files to a user-specified destination folder. fGrab-Many can be given multiple 
+        fGrab-Many will search recursively for any files matching a particular pattern and 
+        then will copy those files to a user-specified destination folder. fGrab-Many can be given multiple 
         patterns to match. fGrab-Many will create a CSV manifest file in the destination location. Ran with no 
         parameters, fGrab-Many will copy everything (excluding directories) in .\ and place copies of the files 
         into .\deviouslicks\.

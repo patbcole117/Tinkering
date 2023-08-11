@@ -18,7 +18,7 @@ gdb:
 gdb adds around 112bytes to address.
 
 pwntools:
-    write cyclyc(cyclic_find(
+    write cyclyc(cyclic_find)
     write add
     write nops
     write payload
