@@ -7,7 +7,7 @@ import (
     "encoding/json"
     "os"
     "net/http"
-    "strings"
+    //"strings"
     "time"
     
     "github.com/go-chi/chi/v5"
@@ -20,41 +20,35 @@ type Book struct {
 }
 
 func (b *Book) UnmarshalJSON(j []byte) error {
-    var bStrings map[string]string
-    err := json.Unmarshal(j, &bStrings)
-    if err != nil {
-        return err
+    type Alias Book
+    aux := &struct{
+        Dop string   `json:"dop"`
+        *Alias
+    }{
+        Alias:  (*Alias)(b),
     }
 
-    for k, v := range bStrings {
-        switch strings.ToLower(k){
-        case "author":
-            b.Author = v
-        case "title":
-            b.Title = v
-        case "dop":
-            t, err := time.Parse(time.DateOnly, v)
-            if err != nil {
-                return err
-            }
-            fmt.Println(t)
-            b.Dop = t
-        }
+    if err := json.Unmarshal(j, &aux); err != nil {
+        return err
+    }
+   
+    t, err := time.Parse(time.DateOnly, aux.Dop)
+    b.Dop = t
+    if err != nil {
+        return err
     }
     return nil
 }
 
 func (b *Book) MarshalJSON() ([]byte, error) {
-    basicBook := struct {
-        Author  string  `json:"id"`
-        Title   string  `json:"title"`
-        Dop     string  `json:"dop"`
+    type Alias Book
+    return json.Marshal(&struct {
+        Dop string  `json:"dop"`
+        *Alias
     }{
-        Author: b.Author,
-        Title:  b.Title,
-        Dop:    b.Dop.Format(time.DateOnly),
-    }
-    return json.Marshal(&basicBook)
+        Dop: b.Dop.Format(time.DateOnly),
+        Alias:  (*Alias)(b),
+    })
 }
 
 func main() {
