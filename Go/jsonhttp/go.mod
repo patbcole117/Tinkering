@@ -1,4 +1,4 @@
-module github.com/patbcole117/Tinkering/Go/hsonhttp
+module github.com/patbcole117/Tinkering/Go/jsonhttp
 
 go 1.21.0
 
