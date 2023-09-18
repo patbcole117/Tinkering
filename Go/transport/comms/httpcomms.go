@@ -65,7 +65,6 @@ func (tx *HTTPCommTx) Get(dst string) (*http.Response, error) {
 }
 
 var ErrNilSrv = errors.New("server is nil")
-
 type HTTPCommRx struct {
     Ip      string
     Port    int
@@ -73,7 +72,7 @@ type HTTPCommRx struct {
 }
 func NewHTTPCommRx(i string, p int) *HTTPCommRx {
     rx := HTTPCommRx{Ip: i, Port: p}
-    srv := rx.provisionSrv()
+    srv := rx.ProvisionSrv()
     rx.Srv = srv
     return &rx
 }
@@ -94,7 +93,7 @@ func (rx *HTTPCommRx) StopSrv() error {
     if err := rx.Srv.Close(); err != nil {
         return err
     }
-    rx.Srv = rx.provisionSrv()
+    rx.Srv = rx.ProvisionSrv()
     return nil
 }
 
@@ -103,7 +102,7 @@ func (rx *HTTPCommRx) GetAddy() string {
     return (rx.Ip + ":" + sPort)
 }
 
-func (rx *HTTPCommRx) provisionSrv() *http.Server {
+func (rx *HTTPCommRx) ProvisionSrv() *http.Server {
     addy := rx.GetAddy()
     mux := http.NewServeMux()
     mux.HandleFunc("/", getRoot)
@@ -120,7 +119,7 @@ func getRoot(w http.ResponseWriter, r *http.Request) {
     if r.Body != http.NoBody {
         msg, _ = io.ReadAll(r.Body)
     } else {
-        msg = []byte(fmt.Sprintf("No body in request."))
+        msg = []byte("No body in request.")
     }
     h, _ := json.MarshalIndent(r.Header, "", "  ") 
     reply := fmt.Sprintf("%s\n%s", msg, h)
