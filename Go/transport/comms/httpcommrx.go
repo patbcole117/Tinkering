@@ -1,7 +1,6 @@
 package comms
 
 import (
-    "bytes"
     "encoding/json"
     "fmt"
     "io"
@@ -9,59 +8,6 @@ import (
     "strconv"
     "time"
 )
-
-var (
-    CONN_TIMEOUT time.Duration = 10 * time.Second
-    SERVER_DELAY = 2 * time.Second
-    USER_AGENT string = "Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Geko/41.0 Firefox/41.0"
-)
-
-type HTTPCommTX struct {
-	C *http.Client
-}
-
-func NewHTTPCommTX() HTTPCommTX {
-    return HTTPCommTX{C: &http.Client{Timeout: CONN_TIMEOUT}}
-}
-
-func (tx *HTTPCommTX) SendJSON(msg interface{}, dst string)(*http.Response, error) {
-    b, err := json.Marshal(msg)
-    if err != nil {
-        return nil, err
-    } 
-    body := bytes.NewReader(b)
-
-    req, err := http.NewRequest(http.MethodPost, dst, body)
-    if err != nil {
-        return nil, err
-    }
-
-    req.Header.Set("Content-Type", "application/json")
-    req.Header.Set("User-Agent", USER_AGENT)
-    req.Header.Set("Date", time.Now().Format(time.RFC1123))
-    
-    res, err := tx.C.Do(req)
-    if err != nil {
-        return nil, err
-    }
-    return res, nil
-}
-
-func (tx *HTTPCommTX) Get(dst string) (*http.Response, error) {
-    req, err := http.NewRequest(http.MethodGet, dst, nil)
-    if err != nil {
-        return nil, err
-    }
-
-    req.Header.Set("User-Agent", USER_AGENT)
-    req.Header.Set("Date", time.Now().Format(time.RFC1123))
-    
-    res, err := tx.C.Do(req)
-    if err != nil {
-        return nil, err
-    }
-    return res, nil
-}
 
 type HTTPCommRX struct {
     Ip      string
