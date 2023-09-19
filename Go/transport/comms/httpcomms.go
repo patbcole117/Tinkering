@@ -3,7 +3,6 @@ package comms
 import (
     "bytes"
     "encoding/json"
-    "errors" 
     "fmt"
     "io"
 	"net/http"
@@ -17,15 +16,15 @@ var (
     USER_AGENT string = "Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Geko/41.0 Firefox/41.0"
 )
 
-type HTTPCommTx struct {
+type HTTPCommTX struct {
 	C *http.Client
 }
 
-func NewHTTPCommTx() *HTTPCommTx{
-    return &HTTPCommTx{C: &http.Client{Timeout: CONN_TIMEOUT}}
+func NewHTTPCommTX() HTTPCommTX {
+    return HTTPCommTX{C: &http.Client{Timeout: CONN_TIMEOUT}}
 }
 
-func (tx *HTTPCommTx) SendJson(msg interface{}, dst string)(*http.Response, error) {
+func (tx *HTTPCommTX) SendJSON(msg interface{}, dst string)(*http.Response, error) {
     b, err := json.Marshal(msg)
     if err != nil {
         return nil, err
@@ -48,7 +47,7 @@ func (tx *HTTPCommTx) SendJson(msg interface{}, dst string)(*http.Response, erro
     return res, nil
 }
 
-func (tx *HTTPCommTx) Get(dst string) (*http.Response, error) {
+func (tx *HTTPCommTX) Get(dst string) (*http.Response, error) {
     req, err := http.NewRequest(http.MethodGet, dst, nil)
     if err != nil {
         return nil, err
@@ -64,20 +63,19 @@ func (tx *HTTPCommTx) Get(dst string) (*http.Response, error) {
     return res, nil
 }
 
-var ErrNilSrv = errors.New("server is nil")
-type HTTPCommRx struct {
+type HTTPCommRX struct {
     Ip      string
     Port    int
     Srv       *http.Server
 }
-func NewHTTPCommRx(i string, p int) *HTTPCommRx {
-    rx := HTTPCommRx{Ip: i, Port: p}
+func NewHTTPCommRX(i string, p int) *HTTPCommRX {
+    rx := HTTPCommRX{Ip: i, Port: p}
     srv := rx.ProvisionSrv()
     rx.Srv = srv
     return &rx
 }
 
-func (rx *HTTPCommRx) StartSrv() error {
+func (rx *HTTPCommRX) StartSrv() error {
     if rx.Srv == nil {
         return ErrNilSrv
     }
@@ -86,7 +84,7 @@ func (rx *HTTPCommRx) StartSrv() error {
     return nil
 }
 
-func (rx *HTTPCommRx) StopSrv() error {
+func (rx *HTTPCommRX) StopSrv() error {
     if rx.Srv == nil {
         return ErrNilSrv
     }
@@ -97,12 +95,12 @@ func (rx *HTTPCommRx) StopSrv() error {
     return nil
 }
 
-func (rx *HTTPCommRx) GetAddy() string {
+func (rx *HTTPCommRX) GetAddy() string {
     sPort := strconv.Itoa(rx.Port)
     return (rx.Ip + ":" + sPort)
 }
 
-func (rx *HTTPCommRx) ProvisionSrv() *http.Server {
+func (rx *HTTPCommRX) ProvisionSrv() *http.Server {
     addy := rx.GetAddy()
     mux := http.NewServeMux()
     mux.HandleFunc("/", getRoot)
@@ -114,7 +112,22 @@ func (rx *HTTPCommRx) ProvisionSrv() *http.Server {
     } 
 }
 
-func getRoot(w http.ResponseWriter, r *http.Request) {
+func getRoot (w http.ResponseWriter, r *http.Request) {
+    msg, _ := io.ReadAll(r.Body)
+    fmt.Println("Recieved:")
+    fmt.Printf("%s\n", msg)
+    fmt.Println("Reply:")
+    reply := map[string]string{
+        "From": "Home",
+        "Type": "job",
+        "Ref": "1",
+        "Content":"Do the thing"}    
+    breply, _ := json.Marshal(reply) 
+    fmt.Println(string(breply))
+    w.Write(breply)
+}
+
+func urlEcho(w http.ResponseWriter, r *http.Request) {
     var msg []byte
     if r.Body != http.NoBody {
         msg, _ = io.ReadAll(r.Body)

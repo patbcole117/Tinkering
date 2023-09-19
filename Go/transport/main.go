@@ -4,10 +4,20 @@ import (
     "fmt"
     "io"
     "github.com/patbcole117/Tinkering/Go/transport/comms"
+    "github.com/patbcole117/Tinkering/Go/transport/agent"
 )
 
 func main() {
-    rx := comms.NewHTTPCommRx("127.0.0.1", 8888)
+    rx := comms.NewHTTPCommRX("127.0.0.1", 8888)
+    if err := rx.StartSrv(); err != nil {
+        panic(err)
+    }
+    a, _ := agent.NewAgent("Bob", "http://127.0.0.1:8888/", "http")
+    a.Run()
+}
+
+func TestRestart() {
+    rx := comms.NewHTTPCommRX("127.0.0.1", 8888)
     if err := rx.StartSrv(); err != nil {
         panic(err)
     }
@@ -20,7 +30,7 @@ func main() {
         panic(err)
     }
 
-    tx := comms.NewHTTPCommTx()
+    tx := comms.NewHTTPCommTX()
     res, err := tx.Get("http://127.0.0.1:8888")
     if err != nil {
         panic(err)
@@ -39,7 +49,7 @@ func main() {
         "Speed":    70,
     }
     
-    res, err = tx.SendJson(m, "http://127.0.0.1:8888/")
+    res, err = tx.SendJSON(m, "http://127.0.0.1:8888/")
     if err != nil {
         panic(err)
     }    
