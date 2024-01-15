@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+int binary_search(int *arr, int start, int end, int target);
 void get_sorted_list(int* arr, int len);
 void get_unsorted_list(int* arr, int len, int seed, int max);
 void print_list(int *arr, int len);
@@ -48,10 +49,31 @@ int main(int argc, char** argv){
         get_sorted_list(arr, len);
     }
     print_list(arr, len);
-    printf("target: %d\n", target);
+    printf("Target: %d\n", target);
+
+    switch(sType){
+        case 1: binary_search(arr, 0, len-1, target); break;
+    }
 
     free(arr);
     return 1;
+}
+
+int binary_search(int *arr, int start, int end, int target){
+    if(start > end){
+        printf("Target not found.\n");
+        return -1;
+    }
+    
+    int middle = (start + end) / 2;
+    if(target == arr[middle]){
+        printf("Target found at index: %d.\n", middle);
+        return middle;
+    } else if(target > arr[middle]){
+        return binary_search(arr, middle+1, end, target);
+    } else {
+        return binary_search(arr, start, middle-1, target);
+    }
 }
 
 void get_unsorted_list(int* arr, int len, int seed, int max){
