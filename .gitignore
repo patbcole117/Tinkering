@@ -1,2 +1,5 @@
-C/Search.exe
-C/Search.obj
+*.exe
+*.obj
+*.pdb
+*.ilk
+*.vscode
