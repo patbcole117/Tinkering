@@ -3,7 +3,7 @@
 
 int read_ln(char *buf, int size, FILE *stream);
 
-enum { kNumStr = 4, kBufSize = 32 };
+enum { kNumStr = 4, kBufSize = 8 };
 
 int main(int argc, char *argv[]) {
     char libs[kNumStr][kBufSize];
@@ -27,11 +27,11 @@ int main(int argc, char *argv[]) {
 
 int read_ln(char *buf, int size, FILE *stream) {
     char ch;
-    int i = 0, ch_remains = 1;
-    while( ch_remains ) {
+    int i = 0;
+    while( 1 ) {
         ch = fgetc(stream);
         if((ch == '\n') || (ch == EOF)) {
-            ch_remains = 0;
+            break;
         } else if (i < size-1) {
             *(buf+i) = ch;
             i++;
