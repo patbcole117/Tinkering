@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 enum { kBufSize = 8 };
 int read_ln(char *buf, int size, FILE *stream);
@@ -29,7 +28,6 @@ int read_ln(char *buf, int size, FILE *stream) {
         ch = fgetc(stream);
         if ((ch == '\n') || (ch == EOF)) {
             chars_remain = 0;
-            *(buf+i) = '\0';
         } else if (i < size-1) {
             *(buf+i) = ch;
             i++;
