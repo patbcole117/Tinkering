@@ -10,13 +10,13 @@ void GenerateKeyA(char* key, char* pt);
 
 int main(int argc, char* argv[]) {
 
-	char keyA[] = "GetCalendarSupportedDateRange";
+	char ctA[] = "GetCalendarSupportedDateRange";
 	char ptA[] = "WTSEnumerateProcessesW";
-	GenerateKeyA(keyA, ptA);		
+	GenerateKeyA(ctA, ptA);		
 
-	wchar_t key[] = L"GetCalendarSupportedDateRange";
-	wchar_t pt[] = L"WTSEnumerateProcessesW";
-	GenerateKeyW(key, pt);
+	//wchar_t ctW[] = L"GetCalendarSupportedDateRange";
+	//wchar_t ptW[] = L"WTSEnumerateProcessesW";
+	//GenerateKeyW(ctW, ptE);
 
 	return EXIT_SUCCESS;
 }
